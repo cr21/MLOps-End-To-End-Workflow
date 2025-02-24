@@ -1,0 +1,10 @@
+_target_: src.datamodules.data_module.GenericDataModule
+data: ${oc.env:PROJECT_ROOT}/data/fruit_veg_classification
+batch_size: 32
+num_workers: 4
+split: [0.8, 0.1, 0.1]
+train_transform: null
+test_transform: null
+name: fruit_veg_datamodule
+image_size: [224, 224]
+pin_memory: True

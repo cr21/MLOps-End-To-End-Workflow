@@ -1,0 +1,55 @@
+# @package _global_
+defaults:
+  - override /data: fruit_veg
+  - override /model: timm_classifier
+  - override /callbacks: default
+  - override /trainer: cpu
+  - override /logger: default
+
+# Experiment name
+name: resnet_18_fruit_veg_ex
+
+# Experiment description
+description: A simple experiment to test the resnet_18 model on the fruit_veg dataset
+
+seed: 42
+
+# data parameters
+data:
+  batch_size: 32
+  num_workers: 0
+  pin_memory: True
+
+# trainer parameters
+trainer:
+  min_epochs: 1
+  max_epochs: 2
+
+
+
+# model parameters
+model:
+  num_classes: 37
+  base_model: "resnet18"
+  learning_rate: 0.001
+  weight_decay: 0.0001
+
+## Early stopping parameters
+callbacks:
+  early_stopping:
+    monitor: "val/acc"
+    patience: 10
+    mode: "max"
+  model_checkpoint:
+    dirpath: ${oc.env:PROJECT_ROOT}/checkpoints/${name}/
+    monitor: "val/acc"
+    mode: "max"
+    filename: "best_model"
+    save_top_k: 1
+    save_last: True
+  
+tags: ["fruit_veg", "classification", "resnet18"]
+
+
+
+
