@@ -37,3 +37,6 @@ pip install -r requirements.txt
    17  pip install hydra_colorlog --upgrade
    18  pip install hydra-joblib-launcher --upgrade
    21  pip install aim
+
+   pip install hydra-joblib-launcher
+   pip install hydra-optuna-sweeper
