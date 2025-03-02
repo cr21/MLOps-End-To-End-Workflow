@@ -1,0 +1,76 @@
+# @package _global_
+defaults:
+  - override /data: food_101_data
+  - override /model: timm_classifier
+  - override /callbacks: default
+  - override /trainer: gpu
+  - override /logger: default
+
+# Experiment name
+name: vit_224_patch_16_food_classifier_ex
+
+# Experiment description
+description: A simple experiment to test the vit model on the food classifier dataset
+
+seed: 42
+
+# data parameters
+data:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: True
+  image_size: 224
+
+# trainer parameters
+trainer:
+  min_epochs: 5
+  max_epochs: 10
+  gradient_clip_val: 1.0
+  precision: 16
+  accelerator: 'gpu'
+  devices: 1
+  accumulate_grad_batches: 1
+
+# model parameters
+model:
+  num_classes: 101
+  weight_decay: 5e-5
+  base_model: "vit_small_patch16_224"
+  learning_rate: 1e-4
+  pretrained: True
+  patch_size: 16
+  embed_dim: 128
+  depth: 12
+  num_heads: 6
+  mlp_ratio: 4
+  patience: 5
+  factor: 0.2
+  min_lr: 1e-7
+  dropout_rate: 0.1
+
+## Early stopping parameters
+callbacks:
+  early_stopping:
+    monitor: "val/acc"
+    patience: 5
+    mode: "max"
+    min_delta: 0.001
+  model_checkpoint:
+    dirpath: ${oc.env:PROJECT_ROOT}/checkpoints/${name}/
+    monitor: "val/acc"
+    mode: "max"
+    filename: "best_model"
+    save_top_k: 1
+    save_last: True
+
+# logger configuration
+logger:
+  aim:
+    experiment: ${name}
+    run_name: ${model.base_model}_run_${seed}
+  # mlflow:
+  #   experiment_name: ${name}
+  #   run_name: ${model.base_model}_run_${seed}
+s3_model_save_location: "pytorch-timm-emlov4"
+tags: ["food_101_classifier", "classification", "vit"]
+ckpt_path: ${oc.env:PROJECT_ROOT}/checkpoints/${name}/best_model.ckpt

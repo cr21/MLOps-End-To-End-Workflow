@@ -1,0 +1,43 @@
+# @package _global_
+defaults:
+  - override /hydra/sweeper: optuna
+  - override /hydra/launcher: joblib
+
+name: "food_classifier_resnet18_hparam"
+experiment_name: "food_classifier_resnet18_hparam"
+optimization_metrics: "test/acc_best"
+
+hydra:
+  mode: "MULTIRUN"
+  sweeper:
+    sampler:
+      _target_: optuna.samplers.TPESampler
+      seed: 123
+      n_startup_trials: 4
+    direction: maximize
+    study_name: food_resnet18_hparam_optimization
+    storage: null
+    n_trials: 15
+    n_jobs: 4 
+    params:
+      model.base_model: choice("resnet18", "resnet34")
+      model.num_classes: 101  # Food-101 dataset
+      model.pretrained: True
+      model.learning_rate: choice(1e-4, 3e-4, 5e-4)
+      model.weight_decay: choice(1e-5, 5e-5, 1e-4)
+      model.dropout_rate: choice(0.2, 0.3)
+      model.factor: choice(0.2, 0.3)
+      data.batch_size: choice(64, 128, 256)
+      trainer.max_epochs: 10
+
+  launcher:
+    n_jobs: 3
+    backend: 'loky'
+
+data:
+  batch_size: 64
+  image_size: 224
+
+trainer:
+  min_epochs: 5
+  max_epochs: 10

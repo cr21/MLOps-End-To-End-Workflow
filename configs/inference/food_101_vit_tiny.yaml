@@ -1,0 +1,11 @@
+name: food_101_vit_tiny
+ckpt_path: ${oc.env:PROJECT_ROOT}/checkpoints/${name}/best_model.ckpt
+save_dir: ${oc.env:PROJECT_ROOT}/predictions/${name}/
+data_dir: ${data.data_dir}
+num_samples: 12
+inference_glob_pattern: "*/*/*.jpg"
+# data_dir: ${paths.data_dir}/bird_small
+
+s3_model_bucket_location: "pytorch-model-emlov4"
+s3_model_bucket_folder_location: "food_101_vit_tiny"
+s3_prediction_bucket_location: "pytorch-model-emlov4-predictions"

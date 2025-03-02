@@ -1,0 +1,8 @@
+name: food_101_vit_small
+ckpt_path: ${oc.env:PROJECT_ROOT}/checkpoints/${name}/best_model.ckpt
+save_dir: ${oc.env:PROJECT_ROOT}/evaluations/${name}/
+data_dir: ${data.data_dir}
+
+# Evaluation specific configurations
+batch_size: 32
+num_workers: 4
