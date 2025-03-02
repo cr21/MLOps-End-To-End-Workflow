@@ -1,0 +1,15 @@
+defaults:
+  - _self_
+  - paths: default
+  - model: timm_classifier
+  - data: birddata
+  - inference: bird_infer
+
+name: ${inference.name}
+ckpt_path: ${oc.env:PROJECT_ROOT}/checkpoints/${inference.name}/best_model.ckpt
+save_dir: ${oc.env:PROJECT_ROOT}/predictions/${inference.name}/
+data_dir: ${data.data}
+num_samples: 10
+img_size: 224
+task_name: "inference"
+log_task_name: "infer_${data.name}"

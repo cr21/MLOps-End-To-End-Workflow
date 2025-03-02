@@ -11,7 +11,7 @@ defaults:
   - trainer: default
   - paths: default
   - hydra: default
-  #- hparam: null
+  - hparam: null
   # experiment configs allow for version control of specific hyperparameters
   # e.g. best hyperparameters for given model and datamodule
   - experiment: resnet_18_fruit_veg_ex

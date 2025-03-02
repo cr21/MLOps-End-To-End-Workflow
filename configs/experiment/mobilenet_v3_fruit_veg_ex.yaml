@@ -1,16 +1,16 @@
 # @package _global_
 defaults:
-  - override /data: sports
+  - override /data: fruit_veg
   - override /model: timm_classifier
   - override /callbacks: default
   - override /trainer: cpu
   - override /logger: default
 
 # Experiment name
-name: resnet_18_sports_ex
+name: mobilenet_v3_fruit_veg_ex
 
 # Experiment description
-description: A simple experiment to test the resnet_18 model on the sports classification dataset
+description: A simple experiment to test the mobilenet_v3 model on the fruit_veg dataset
 
 seed: 42
 
@@ -19,20 +19,22 @@ data:
   batch_size: 32
   num_workers: 0
   pin_memory: True
-
+  image_size: 224
 # trainer parameters
 trainer:
   min_epochs: 1
   max_epochs: 2
 
-
-
 # model parameters
 model:
-  num_classes: 101
-  base_model: "resnet18"
+  num_classes: 37
+  base_model: "mobilenetv3_small_050"
   learning_rate: 0.001
   weight_decay: 0.0001
+  pretrained: False
+
+regularization:
+  gradient_clipping: 0.5
 
 ## Early stopping parameters
 callbacks:
@@ -57,8 +59,4 @@ logger:
   #   experiment_name: ${name}
   #   run_name: ${model.base_model}_run_${seed}
 s3_model_save_location: "pytorch-timm-emlov4"
-tags: ["sports", "classification", "resnet18"]
-
-
-
-
+tags: ["fruit_veg", "classification", "mobilenet_v3"]

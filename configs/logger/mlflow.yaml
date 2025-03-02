@@ -1,0 +1,9 @@
+mlflow:
+  _target_: lightning.pytorch.loggers.MLFlowLogger
+  experiment_name: ${name} # Set your experiment name here
+  tracking_uri: file:${paths.log_dir}/mlruns  # Log to mlruns in logs folder
+  save_dir: ${paths.log_dir}/mlruns
+  log_model: False  # Set to True to log models
+  prefix: ""
+  run_name: ${name}_${now:%Y-%m-%d_%H-%M-%S}_${hydra:job.num}  # Ensure unique run names
+

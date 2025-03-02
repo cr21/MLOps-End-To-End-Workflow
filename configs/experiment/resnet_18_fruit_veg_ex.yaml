@@ -47,7 +47,16 @@ callbacks:
     filename: "best_model"
     save_top_k: 1
     save_last: True
-  
+
+# logger configuration
+logger:
+  aim:
+    experiment: ${name}
+    run_name: ${model.base_model}_run_${seed}
+  # mlflow:
+  #   experiment_name: ${name}
+  #   run_name: ${model.base_model}_run_${seed}
+s3_model_save_location: "pytorch-timm-emlov4"
 tags: ["fruit_veg", "classification", "resnet18"]
 
 

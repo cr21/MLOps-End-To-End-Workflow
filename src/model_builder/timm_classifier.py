@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchmetrics import Accuracy, F1Score, MaxMetric
 import logging
+import uuid
 log = logging.getLogger(__name__)
 class TimmClassifier(L.LightningModule):
 
@@ -50,7 +51,11 @@ class TimmClassifier(L.LightningModule):
         self.val_f1_score = F1Score(task="multiclass", num_classes=num_classes, average="weighted")
         self.test_acc = Accuracy(task="multiclass", num_classes=num_classes, average="weighted")
         self.test_f1_score = F1Score(task="multiclass", num_classes=num_classes, average="weighted")
+        
+        # Add a unique identifier to avoid parameter conflicts in hyperparameter optimization
+        self.run_id = str(uuid.uuid4())
         self.save_hyperparameters()
+        
         self.test_acc_best = MaxMetric()
 
     def forward(self, x):

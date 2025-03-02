@@ -7,10 +7,10 @@ defaults:
   - override /logger: default
 
 # Experiment name
-name: resnet_18_sports_ex
+name: vit_224_patch_16_sports_ex
 
 # Experiment description
-description: A simple experiment to test the resnet_18 model on the sports classification dataset
+description: A simple experiment to test the vit model on the sports classification dataset
 
 seed: 42
 
@@ -19,20 +19,24 @@ data:
   batch_size: 32
   num_workers: 0
   pin_memory: True
-
+  image_size: 224
 # trainer parameters
 trainer:
   min_epochs: 1
   max_epochs: 2
 
-
-
 # model parameters
 model:
   num_classes: 101
-  base_model: "resnet18"
+  base_model: "vit_tiny_patch16_224"
   learning_rate: 0.001
-  weight_decay: 0.0001
+  weight_decay: 0.0001  
+  pretrained: False
+  patch_size: 16
+  embed_dim: 64
+  depth: 12
+  num_heads: 2
+  mlp_ratio: 3
 
 ## Early stopping parameters
 callbacks:
@@ -57,8 +61,4 @@ logger:
   #   experiment_name: ${name}
   #   run_name: ${model.base_model}_run_${seed}
 s3_model_save_location: "pytorch-timm-emlov4"
-tags: ["sports", "classification", "resnet18"]
-
-
-
-
+tags: ["sports", "classification", "vit"]

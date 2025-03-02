@@ -16,7 +16,7 @@ from omegaconf import DictConfig
 from lightning.pytorch.loggers import Logger
 from typing import List
 from utils.logging_utils import setup_logger  # Import the setup_logger function
-
+from src.utils.s3_utility import upload_file_to_s3, remove_files
 # Set up logging
 log = logging.getLogger(__name__)
 
@@ -50,7 +50,13 @@ def instantiate_loggers(logger_cfg: DictConfig) -> List[Logger]:
 def plot_confusion_matrix(y_true, y_pred, class_names, title, filename):
     """Generate and save a confusion matrix plot with percentage values."""
     cm = confusion_matrix(y_true, y_pred)
-    cm_percentage = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]  # Normalize to get percentages
+    
+    # Check for rows that sum to zero and handle them
+    if np.any(cm.sum(axis=1) == 0):
+        log.warning("Confusion matrix contains rows that sum to zero. Adjusting to avoid division by zero.")
+        cm_percentage = np.zeros_like(cm, dtype=float)  # Set to zero if any row sums to zero
+    else:
+        cm_percentage = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]  # Normalize to get percentages
 
     plt.figure(figsize=(20, 16))  # Increased figure size for better visibility
     sns.heatmap(
@@ -82,6 +88,10 @@ def train_model(cfg: DictConfig, trainer: pl.Trainer, model: pl.LightningModule,
     if trainer.checkpoint_callback and trainer.checkpoint_callback.best_model_path:
         log.info(f"Best model saved at {trainer.checkpoint_callback.best_model_path}")
         log.info(f"Best model score {trainer.checkpoint_callback.best_model_score}")
+        s3_model_save_location_path = cfg.s3_model_save_location
+        print(f"S3 model save location path: {s3_model_save_location_path}")
+        upload_file_to_s3(trainer.checkpoint_callback.best_model_path, s3_model_save_location_path)
+        print(f"Model uploaded to S3 at {s3_model_save_location_path}")
         best_model  = model.__class__.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
     else:
         log.warning("No best model found! Skipping.. and use existing model")
@@ -124,7 +134,7 @@ def test_model(cfg: DictConfig, trainer: pl.Trainer, model: pl.LightningModule, 
                           filename=output_dir / "confusion_matrix_test.png")  # Save to the created directory
 
     log.info(f"Test metrics:\n{test_metrics}")  
-    return test_metrics
+    return test_metrics[0] if  test_metrics else {}
 
 
 def get_predictions(trainer: pl.Trainer, model: pl.LightningModule, datamodule: pl.LightningDataModule, stage: str = 'train'):
@@ -187,5 +197,11 @@ def main(cfg: DictConfig):
         log.info("Starting testing!")
         test_model(cfg, trainer, model, datamodule)
 
+    # Return metric score for hyperparameter optimization
+    optimized_metric = cfg.get("optimization_metrics")
+    log.info(f"Optimized metric: {optimized_metric}")
+    log.info(f"Trainer callback metrics: {trainer.callback_metrics}")
+    if optimized_metric and optimized_metric in trainer.callback_metrics:
+        return trainer.callback_metrics[optimized_metric]
 if __name__ == "__main__":
     main()

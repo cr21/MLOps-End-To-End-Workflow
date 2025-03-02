@@ -1,0 +1,24 @@
+defaults:
+  - _self_
+  - paths: default
+  - model: timm_classifier
+  - data: fruit_veg
+  - evaluation: fruit_veg_eval
+  - logger: default
+  - trainer: default
+
+name: ${evaluation.name}
+ckpt_path: ${evaluation.ckpt_path}
+save_dir: ${evaluation.save_dir}
+data_dir: ${evaluation.data_dir}
+
+# Evaluation specific configurations
+batch_size: ${evaluation.batch_size}
+num_workers: ${evaluation.num_workers}
+
+
+# trainer:
+#   _target_: pytorch_lightning.Trainer
+#   accelerator: 'auto'
+#   devices: 1
+#   enable_progress_bar: true

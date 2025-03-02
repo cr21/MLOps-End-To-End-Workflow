@@ -7,10 +7,10 @@ defaults:
   - override /logger: default
 
 # Experiment name
-name: resnet_18_sports_ex
+name: mobilenet_v3_sports_ex
 
 # Experiment description
-description: A simple experiment to test the resnet_18 model on the sports classification dataset
+description: A simple experiment to test the mobilenet_v3 model on the sports classification dataset
 
 seed: 42
 
@@ -25,15 +25,17 @@ trainer:
   min_epochs: 1
   max_epochs: 2
 
-
-
 # model parameters
 model:
   num_classes: 101
-  base_model: "resnet18"
+  base_model: "mobilenetv3_small_050"
   learning_rate: 0.001
   weight_decay: 0.0001
+  pretrained: False
 
+regularization:
+  gradient_clipping: 0.5
+  
 ## Early stopping parameters
 callbacks:
   early_stopping:
@@ -47,7 +49,7 @@ callbacks:
     filename: "best_model"
     save_top_k: 1
     save_last: True
-
+  
 # logger configuration
 logger:
   aim:
@@ -57,8 +59,4 @@ logger:
   #   experiment_name: ${name}
   #   run_name: ${model.base_model}_run_${seed}
 s3_model_save_location: "pytorch-timm-emlov4"
-tags: ["sports", "classification", "resnet18"]
-
-
-
-
+tags: ["sports", "classification", "mobilenet_v3"]
