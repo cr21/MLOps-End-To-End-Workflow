@@ -25,7 +25,7 @@ hydra:
       model.pretrained: True
       model.learning_rate: choice(1e-4, 3e-4, 5e-4)
       model.weight_decay: choice(1e-5, 5e-5, 1e-4)
-      model.dropout_rate: choice(0.2, 0.3)
+      # model.dropout_rate: choice(0.2, 0.3)
       model.factor: choice(0.2, 0.3)
       data.batch_size: choice(32, 64)
       trainer.max_epochs: 10
