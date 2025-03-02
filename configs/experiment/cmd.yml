@@ -1,5 +1,7 @@
 
 # ==========
+python3 src/train.py --multirun hparam=mobilenet_v3_food_classifier_hparam experiment=mobilenet_v3_food_classifier +trainer.gradient_clip_val=0.5 +trainer.precision=16 +model.use_gradient_checkpointing=True
+
 
 python3 src/train.py --multirun hparam=mobilenet_v3_fruit_veg_hparam  experiment=mobilenet_v3_fruit_veg_ex data=fruit_veg    logger.aim.run_name=optuna_fruit_veg_mobilenetv3_run  hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 +trainer.log_every_n_steps=1  
 

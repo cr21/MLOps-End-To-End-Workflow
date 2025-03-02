@@ -16,7 +16,7 @@ seed: 42
 
 # data parameters
 data:
-  batch_size: 64
+  batch_size: 16
   num_workers: 4
   pin_memory: True
   image_size: 224
@@ -29,7 +29,7 @@ trainer:
   precision: 16
   accelerator: 'gpu'
   devices: 1
-  accumulate_grad_batches: 1
+  accumulate_grad_batches: 4
 
 # model parameters
 model:
