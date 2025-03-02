@@ -1,7 +1,7 @@
 
 # ==========
 
-python3 src/train.py --multirun hparam=mobilenet_v3_fruit_veg_hparam  experiment=mobilenet_v3_fruit_veg_ex data=fruit_veg    logger.aim.run_name=optuna_fruit_veg_mobilenetv3_run  hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 +trainer.log_every_n_steps=1  +trainer.limit_train_batches=2  +trainer.limit_val_batches=2
+python3 src/train.py --multirun hparam=mobilenet_v3_fruit_veg_hparam  experiment=mobilenet_v3_fruit_veg_ex data=fruit_veg    logger.aim.run_name=optuna_fruit_veg_mobilenetv3_run  hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 +trainer.log_every_n_steps=1  
 
 python3 src/train.py --multirun  hparam=mobilenet_v3_sports_hparam experiment=mobilenet_v3_sports_ex data=sports  logger.aim.run_name=optuna_sports_mobilenetv3_run hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 +trainer.log_every_n_steps=1 +trainer.limit_train_batches=1 +trainer.limit_val_batches=1
 
@@ -19,3 +19,18 @@ python3 src/train.py   hparam=resnet_18_fruit_veg_hparam experiment=resnet_18_fr
 
 python3 src/eval.py data=fruit_veg evaluation=fruit_veg_eval
 
+
+
+====
+
+python3 src/train.py --multirun hparam=mobilenet_v3_fruit_veg_hparam  experiment=mobilenet_v3_fruit_veg_ex data=fruit_veg    logger.aim.run_name=optuna_fruit_veg_mobilenetv3_run  hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2  trainer.accelerator='gpu'
+
+
+
+pip install -r requirements.txt 
+    7  pip install dvc
+    8  pip install dvc-s3
+   14  pip install hydra-optuna-sweeper --upgrade
+   17  pip install hydra_colorlog --upgrade
+   18  pip install hydra-joblib-launcher --upgrade
+   21  pip install aim

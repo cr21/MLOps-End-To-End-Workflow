@@ -84,14 +84,14 @@ def plot_confusion_matrix(y_true, y_pred, class_names, title, filename):
 def train_model(cfg: DictConfig, trainer: pl.Trainer, model: pl.LightningModule, datamodule: pl.LightningDataModule):
     """Train the model."""
     trainer.fit(model, datamodule)
-
+    log.info(f"Fitted Trainer:")
     if trainer.checkpoint_callback and trainer.checkpoint_callback.best_model_path:
         log.info(f"Best model saved at {trainer.checkpoint_callback.best_model_path}")
         log.info(f"Best model score {trainer.checkpoint_callback.best_model_score}")
         s3_model_save_location_path = cfg.s3_model_save_location
-        print(f"S3 model save location path: {s3_model_save_location_path}")
+        log.info(f"S3 model save location path: {s3_model_save_location_path}")
         upload_file_to_s3(trainer.checkpoint_callback.best_model_path, s3_model_save_location_path)
-        print(f"Model uploaded to S3 at {s3_model_save_location_path}")
+        log.info(f"Model uploaded to S3 at {s3_model_save_location_path}")
         best_model  = model.__class__.load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
     else:
         log.warning("No best model found! Skipping.. and use existing model")
@@ -171,11 +171,11 @@ def main(cfg: DictConfig):
     setup_logger(log_file)  # Call the setup_logger function
 
     # Create data module
-    log.info(f"Instantiating datamodule <{cfg.data._target_}>")
+    log.info(f"Instantiating datamodule ")
     datamodule: pl.LightningDataModule = hydra.utils.instantiate(cfg.data)
 
     # Create model
-    log.info(f"Instantiating model <{cfg.model._target_}>")
+    log.info(f"Instantiating model ")
     model: pl.LightningModule = hydra.utils.instantiate(cfg.model)
 
     # Instantiate callbacks and loggers

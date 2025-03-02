@@ -2,7 +2,7 @@
     autostage = true
     remote = s3_data_store
 ['remote "s3_data_store"']
-    url = s3://cr-mlops-dvc-store
+    url = s3://food-101-dataset-dvc
     access_key_id = <AWS_ACCESS_KEY_ID>
     secret_access_key = <AWS_SECRET_ACCESS_KEY>
     region = us-east-1

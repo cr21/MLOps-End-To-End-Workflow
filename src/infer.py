@@ -34,9 +34,13 @@ def pred_and_plot_image(
         target_image = transform(img)
     else:
         target_image = transforms.Compose([transforms.Resize(image_size),transforms.ToTensor(),])(img)
+    
+    # Get the device of the model
+    device = next(model.parameters()).device
+    
     model.eval()
     with torch.inference_mode():
-        target_image = target_image.unsqueeze(dim=0)
+        target_image = target_image.unsqueeze(dim=0).to(device)  # Move to same device as model
         target_image_pred = model(target_image)
 
     target_image_pred_probs = torch.softmax(target_image_pred, dim=1)
