@@ -17,7 +17,7 @@ seed: 42
 # data parameters
 data:
   batch_size: 32
-  num_workers: 4
+  num_workers: 0
   pin_memory: True
   image_size: 224
 
@@ -41,11 +41,11 @@ model:
   patience: 5
   factor: 0.2
   min_lr: 1e-7
-  dropout_rate: 0.2
+  #dropout_rate: 0.2
 
 regularization:
   gradient_clipping: 0.5
-  
+
 ## Early stopping parameters
 callbacks:
   early_stopping:
