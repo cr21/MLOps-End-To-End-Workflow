@@ -54,3 +54,6 @@ pip install -r requirements.txt
 
    pip install hydra-joblib-launcher
    pip install hydra-optuna-sweeper
+
+
+   python3 src/train_optimizied_hparam.py experiment=mobilenet_v3_food_classifier data=food_101_data
