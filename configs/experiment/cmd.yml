@@ -60,3 +60,4 @@ pip install -r requirements.txt
 
 
    python3 src/eval.py data=food_101_data  evaluation=mobilenet_v3_food_eval
+   python3 src/infer.py data=food_101_data  inference=mobilenet_v3_food_infer

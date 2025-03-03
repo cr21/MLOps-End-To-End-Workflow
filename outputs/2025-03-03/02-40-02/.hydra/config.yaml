@@ -1,0 +1,51 @@
+name: ${inference.name}
+ckpt_path: ${oc.env:PROJECT_ROOT}/checkpoints/${inference.name}/best_model.ckpt
+save_dir: ${oc.env:PROJECT_ROOT}/predictions/${inference.name}/
+data_dir: ${data.data}
+num_samples: 10
+img_size: 224
+task_name: inference
+log_task_name: infer_${data.name}
+paths:
+  root_dir: ${oc.env:PROJECT_ROOT}
+  data_dir: ${paths.root_dir}/data/
+  log_dir: ${paths.root_dir}/logs/
+  output_dir: ${hydra:runtime.output_dir}
+  work_dir: ${hydra:runtime.cwd}
+  static_dir: ${paths.root_dir}/static/
+model:
+  _target_: src.model_builder.timm_classifier.TimmClassifier
+  base_model: resnet18
+  num_classes: 10
+  pretrained: true
+  learning_rate: 0.001
+  weight_decay: 1.0e-05
+  patience: 3
+  factor: 0.1
+  min_lr: 1.0e-06
+data:
+  _target_: src.datamodules.data_module.GenericDataModule
+  data: ${oc.env:PROJECT_ROOT}/data/food_101_data
+  batch_size: 32
+  num_workers: 4
+  split:
+  - 0.8
+  - 0.1
+  - 0.1
+  train_transform: null
+  test_transform: null
+  name: food_101_classifier
+  image_size:
+  - 224
+  - 224
+  pin_memory: true
+inference:
+  name: mobilenet_v3_food_classifier_ex
+  ckpt_path: ${oc.env:PROJECT_ROOT}/checkpoints/${name}/best_model.ckpt
+  save_dir: ${oc.env:PROJECT_ROOT}/predictions/${name}/
+  data_dir: ${data.data_dir}
+  num_samples: 12
+  inference_glob_pattern: '*/*/*.jpg'
+  s3_model_bucket_location: pytorch-model-emlov4
+  s3_model_bucket_folder_location: food_100_classification
+  s3_prediction_bucket_location: pytorch-model-emlov4-predictions

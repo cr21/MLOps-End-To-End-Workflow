@@ -1,0 +1,2 @@
+- data=food_101_data
+- inference=mobilenet_v3_food_infer
