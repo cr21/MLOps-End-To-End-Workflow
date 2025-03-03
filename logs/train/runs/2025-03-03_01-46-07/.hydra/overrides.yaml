@@ -1,0 +1,2 @@
+- experiment=mobilenet_v3_food_classifier
+- data=food_101_data

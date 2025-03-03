@@ -1,0 +1,8 @@
+base_model: mobilenetv3_large_100
+num_classes: 101
+learning_rate: 0.0001
+pretrained: true
+weight_decay: 0.0001
+patience: 5
+factor: 0.3
+min_lr: 1.0e-07

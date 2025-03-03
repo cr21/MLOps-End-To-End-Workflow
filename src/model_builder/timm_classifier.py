@@ -23,7 +23,7 @@ class TimmClassifier(L.LightningModule):
         log.info(f"Creating model with num_classes: {num_classes}")
         model = timm.create_model(model_name, pretrained=pretrained, **kwargs)
         model.reset_classifier(num_classes)
-        log.info(f"Model created: {model}")
+        #log.info(f"Model created: {model}")
         return model
     
     def __init__(self, 

@@ -1,0 +1,13 @@
+- model.base_model=mobilenetv3_large_100
+- model.learning_rate=0.0003
+- model.weight_decay=5e-05
+- model.factor=0.2
+- data.batch_size=64
+- regularization.gradient_clipping=1.0
+- model.num_classes=101
+- model.pretrained=True
+- trainer.max_epochs=10
+- hparam=mobilenet_v3_food_classifier_hparam
+- experiment=mobilenet_v3_food_classifier
+- +trainer.log_every_n_steps=1
+- logger.aim.run_name=optuna_food_classiftier_mobilenetv3_run

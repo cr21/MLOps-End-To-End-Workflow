@@ -1,0 +1,9 @@
+name: optuna
+best_params:
+  model.base_model: mobilenetv3_large_100
+  model.learning_rate: 0.0003
+  model.weight_decay: 5.0e-05
+  model.factor: 0.2
+  data.batch_size: 64
+  regularization.gradient_clipping: 1.0
+best_value: 0.7619801759719849

@@ -1,0 +1,225 @@
+hydra:
+  run:
+    dir: ${paths.log_dir}/${task_name}/runs/${now:%Y-%m-%d}_${now:%H-%M-%S}
+  sweep:
+    dir: ${paths.log_dir}/${task_name}/multiruns/${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+  launcher:
+    _target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
+    n_jobs: 4
+    backend: loky
+    prefer: processes
+    require: null
+    verbose: 0
+    timeout: null
+    pre_dispatch: 2*n_jobs
+    batch_size: auto
+    temp_folder: null
+    max_nbytes: null
+    mmap_mode: r
+  sweeper:
+    sampler:
+      _target_: optuna.samplers.TPESampler
+      seed: 123
+      consider_prior: true
+      prior_weight: 1.0
+      consider_magic_clip: true
+      consider_endpoints: false
+      n_startup_trials: 4
+      n_ei_candidates: 24
+      multivariate: false
+      warn_independent_sampling: true
+    _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+    direction: maximize
+    storage: null
+    study_name: food_mobilenetv3_hparam_optimization
+    n_trials: 10
+    n_jobs: 4
+    search_space: null
+    params:
+      model.base_model: choice("mobilenetv3_large_100", "mobilenetv3_small_100")
+      model.num_classes: '101'
+      model.pretrained: 'True'
+      model.learning_rate: choice(5e-5, 1e-4, 3e-4)
+      model.weight_decay: choice(1e-5, 5e-5, 1e-4)
+      model.factor: choice(0.2, 0.3)
+      data.batch_size: choice(32, 64)
+      regularization.gradient_clipping: choice(0.5, 1.0)
+      trainer.max_epochs: '10'
+    custom_search_space: null
+  help:
+    app_name: ${hydra.job.name}
+    header: '${hydra.help.app_name} is powered by Hydra.
+
+      '
+    footer: 'Powered by Hydra (https://hydra.cc)
+
+      Use --hydra-help to view Hydra specific help
+
+      '
+    template: '${hydra.help.header}
+
+      == Configuration groups ==
+
+      Compose your configuration from those groups (group=option)
+
+
+      $APP_CONFIG_GROUPS
+
+
+      == Config ==
+
+      Override anything in the config (foo.bar=value)
+
+
+      $CONFIG
+
+
+      ${hydra.help.footer}
+
+      '
+  hydra_help:
+    template: 'Hydra (${hydra.runtime.version})
+
+      See https://hydra.cc for more info.
+
+
+      == Flags ==
+
+      $FLAGS_HELP
+
+
+      == Configuration groups ==
+
+      Compose your configuration from those groups (For example, append hydra/job_logging=disabled
+      to command line)
+
+
+      $HYDRA_CONFIG_GROUPS
+
+
+      Use ''--cfg hydra'' to Show the Hydra config.
+
+      '
+    hydra_help: ???
+  hydra_logging:
+    version: 1
+    formatters:
+      colorlog:
+        (): colorlog.ColoredFormatter
+        format: '[%(cyan)s%(asctime)s%(reset)s][%(purple)sHYDRA%(reset)s] %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: colorlog
+        stream: ext://sys.stdout
+    root:
+      level: INFO
+      handlers:
+      - console
+    disable_existing_loggers: false
+  job_logging:
+    version: 1
+    formatters:
+      simple:
+        format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
+      colorlog:
+        (): colorlog.ColoredFormatter
+        format: '[%(cyan)s%(asctime)s%(reset)s][%(blue)s%(name)s%(reset)s][%(log_color)s%(levelname)s%(reset)s]
+          - %(message)s'
+        log_colors:
+          DEBUG: purple
+          INFO: green
+          WARNING: yellow
+          ERROR: red
+          CRITICAL: red
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: colorlog
+        stream: ext://sys.stdout
+      file:
+        class: logging.FileHandler
+        formatter: simple
+        filename: ${hydra.runtime.output_dir}/${task_name}.log
+    root:
+      level: INFO
+      handlers:
+      - console
+      - file
+    disable_existing_loggers: false
+  env: {}
+  mode: MULTIRUN
+  searchpath: []
+  callbacks: {}
+  output_subdir: .hydra
+  overrides:
+    hydra: []
+    task:
+    - model.base_model=mobilenetv3_large_100
+    - model.learning_rate=0.0001
+    - model.weight_decay=0.0001
+    - model.factor=0.3
+    - data.batch_size=64
+    - regularization.gradient_clipping=1.0
+    - model.num_classes=101
+    - model.pretrained=True
+    - trainer.max_epochs=10
+    - hparam=mobilenet_v3_food_classifier_hparam
+    - experiment=mobilenet_v3_food_classifier
+    - +trainer.log_every_n_steps=1
+    - logger.aim.run_name=optuna_food_classiftier_mobilenetv3_run
+  job:
+    name: train
+    chdir: null
+    override_dirname: +trainer.log_every_n_steps=1,data.batch_size=64,experiment=mobilenet_v3_food_classifier,hparam=mobilenet_v3_food_classifier_hparam,logger.aim.run_name=optuna_food_classiftier_mobilenetv3_run,model.base_model=mobilenetv3_large_100,model.factor=0.3,model.learning_rate=0.0001,model.num_classes=101,model.pretrained=True,model.weight_decay=0.0001,regularization.gradient_clipping=1.0,trainer.max_epochs=10
+    id: train_9
+    num: 9
+    config_name: train
+    env_set: {}
+    env_copy: []
+    config:
+      override_dirname:
+        kv_sep: '='
+        item_sep: ','
+        exclude_keys: []
+  runtime:
+    version: 1.3.2
+    version_base: '1.3'
+    cwd: /home/ubuntu/MLOps-End-To-End-Workflow
+    config_sources:
+    - path: hydra.conf
+      schema: pkg
+      provider: hydra
+    - path: /home/ubuntu/MLOps-End-To-End-Workflow/configs
+      schema: file
+      provider: main
+    - path: hydra_plugins.hydra_colorlog.conf
+      schema: pkg
+      provider: hydra-colorlog
+    - path: ''
+      schema: structured
+      provider: schema
+    output_dir: /home/ubuntu/MLOps-End-To-End-Workflow/logs/train/multiruns/2025-03-02_23-10-09/9
+    choices:
+      debug: null
+      experiment: mobilenet_v3_food_classifier
+      hparam: mobilenet_v3_food_classifier_hparam
+      hydra: default
+      paths: default
+      trainer: gpu
+      logger: default
+      callbacks: default
+      model: timm_classifier
+      data: food_101_data
+      hydra/env: default
+      hydra/callbacks: null
+      hydra/job_logging: colorlog
+      hydra/hydra_logging: colorlog
+      hydra/hydra_help: default
+      hydra/help: default
+      hydra/sweeper: optuna
+      hydra/sweeper/sampler: tpe
+      hydra/launcher: joblib
+      hydra/output: default
+  verbose: false

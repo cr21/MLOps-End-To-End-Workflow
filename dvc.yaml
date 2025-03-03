@@ -1,0 +1,57 @@
+stages:
+  train:
+    #cmd: python3 src/train.py experiment=dogbreed_ex +trainer.log_every_n_steps=5
+    #cmd: python3 src/train.py experiment=bird_classifier_ex +trainer.log_every_n_steps=1
+    cmd: python3 src/train.py --multirun  hparam=bird_mobilenet_v3_hparam  experiment=bird_classifier_mobilenetv3 data=birddata  logger.mlflow.run_name=optuna_bird_mobilenetv3_run  logger.aim.run_name=optuna_bird_mobilenetv3_run hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 +trainer.log_every_n_steps=1 
+    deps:
+    - configs/hparam/bird_mobilenet_v3_hparam.yaml
+    - configs/experiment/bird_classifier_mobilenetv3.yaml
+    - configs/data/birddata.yaml
+    - src/train.py
+    - data
+    outs:
+    - logs:
+        cache: false
+  # analyze experiment
+  analyze_experiment:
+    cmd: python3 src/utils/analyze_experiments.py
+    deps:
+    - src/utils/analyze_experiments.py
+    outs:
+    - plots:
+        cache: false
+    - markdown_results/hyperparameter_table.md:
+        cache: false
+  optimize_training:
+    cmd: python3 src/train_optimized_hparam.py experiment=bird_classifier_mobilenetv3 data=birddata
+    deps:
+    - configs/hparam/bird_mobilenet_v3_hparam.yaml
+    - configs/experiment/bird_classifier_mobilenetv3.yaml
+    - src/train_optimized_hparam.py
+    - data
+    outs:
+    - markdown_results/best_hparams.md:
+        cache: false
+  # evaluation:
+  #   cmd: python3 src/eval.py data=birddata evaluation=bird_eval
+  #   deps:
+  #   - configs/evaluation/dogbreed_eval.yaml
+  #   - configs/evaluation/bird_eval.yaml
+  #   - configs/data/birddata.yaml
+  #   - configs/data/dogbreed.yaml
+  #   - data
+  #   - src/eval.py
+  #   outs:
+  #   - evaluations:
+  #       cache: false
+  inference:
+    #cmd: python3 src/infer.py data=birddata inference=bird_infer
+    cmd: python3 src/infer.py data=birddata inference=bird_mobilenet_v3_infer
+    deps:
+    - configs/data/birddata.yaml
+    - configs/inference/bird_mobilenet_v3_infer.yaml
+    - data
+    - src/infer.py
+    outs:
+    - predictions:
+        cache: false

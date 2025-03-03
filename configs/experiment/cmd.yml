@@ -1,8 +1,22 @@
 
+=== AWS RUNNING START
+# python3 src/train.py  hparam=mobilenet_v3_food_classifier_hparam experiment=mobilenet_v3_food_classifier   +trainer.log_every_n_steps=1  logger.aim.run_name=optuna_food_classiftier_mobilenetv3_run
+python3 src/train.py  hparam=mobilenet_v3_food_classifier_hparam experiment=mobilenet_v3_food_classifier   +trainer.log_every_n_steps=1  logger.aim.run_name=optuna_food_classiftier_mobilenetv3_run +trainer.limit_train_batches=1 +trainer.limit_val_batches=1
+
+python3 src/train.py  --multirun  hparam=mobilenet_v3_food_classifier_hparam experiment=mobilenet_v3_food_classifier   +trainer.log_every_n_steps=1  logger.aim.run_name=optuna_food_classiftier_mobilenetv3_run +trainer.limit_train_batches=1 +trainer.limit_val_batches=1
+
+
+python3 src/train.py  --multirun  hparam=resnet_18_food_classifier_hparam  experiment=resnet_18_food_classifier   +trainer.log_every_n_steps=1  logger.aim.run_name=optuna_food_classiftier_resnet_run +trainer.limit_train_batches=1 +trainer.limit_val_batches=1
+python3 src/train_optimizied_hparam.py experiment=mobilenet_v3_food_classifier data=food_101_data 
+
+
+=== AWS RUNNING END
+
 # ==========
 python3 src/train.py --multirun hparam=mobilenet_v3_food_classifier_hparam experiment=mobilenet_v3_food_classifier +trainer.gradient_clip_val=0.5 +trainer.precision=16 +model.use_gradient_checkpointing=True
 
-python3 src/train.py --multirun  hparam=mobilenet_v3_food_classifier_hparam experiment=mobilenet_v3_food_classifier   +trainer.log_every_n_steps=1 hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 
+python3 src/train.py --multirun  hparam=mobilenet_v3_food_classifier_hparam experiment=mobilenet_v3_food_classifier   +trainer.log_every_n_steps=1 
+--hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 
 
 python3 src/train.py --multirun hparam=mobilenet_v3_fruit_veg_hparam  experiment=mobilenet_v3_fruit_veg_ex data=fruit_veg    logger.aim.run_name=optuna_fruit_veg_mobilenetv3_run  hydra.sweeper.n_jobs=2 hydra.launcher.n_jobs=2 +trainer.log_every_n_steps=1  
 
