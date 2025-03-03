@@ -57,3 +57,6 @@ pip install -r requirements.txt
 
 
    python3 src/train_optimizied_hparam.py experiment=mobilenet_v3_food_classifier data=food_101_data
+
+
+   python3 src/eval.py data=food_101_data  evaluation=mobilenet_v3_food_eval
